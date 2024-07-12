@@ -66,27 +66,27 @@ return (
 }
 
 const styles = StyleSheet.create({
-  container: {
+container: {
     flex: 1,
     backgroundColor: '#fff',
     alignItems: 'center',
     marginTop: 100,
-  },
-  inputContainer: {
+},
+inputContainer: {
     flexDirection: 'row',
-  },
-  textInput: {
+},
+textInput: {
     paddingHorizontal: 20,
-  },
-  itemContainer: {
+},
+itemContainer: {
     flexDirection: 'row',
-  },
-  listContainer: {
+},
+listContainer: {
     flex: 1,
     width: '100%',
-  },
-  modal: {
+},
+modal: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
+},
 });
