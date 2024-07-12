@@ -1,92 +1,61 @@
-import { StyleSheet, Text, View, TextInput, Button, FlatList, TouchableOpacity, Modal } from 'react-native';
 import { useState } from 'react';
-import * as Linking from 'expo-linking';
-
-Linking.openURL('https://expo.dev');
+import { Text, View, StyleSheet, Keyboard, ScrollView } from 'react-native';
+import TareaInputField from './components/TareaInputField';
+import TareaItem from './components/TareaItem';
 
 export default function App() {
-const [textItem, setTextItem] = useState("");
-const [items, setItems] = useState([]);
-const [selectedItem, setSelectedItem] = useState({});
-const [modalVisible, setModalVisible] = useState(false);
+    const [tareas, setTareas] = useState([]);
+    const addTarea = (tarea) => {
+        if (tarea == null) return;
+        setTareas([...tareas, tarea])
+        Keyboard.dismiss()
+    }
+    const borrarTarea = (deleteIndex) => {
+        setTareas(tareas.filter((value, index) => index != deleteIndex));
+    }
 
-const onHandleTextChange = (text) => {
-    setTextItem(text);
-};
-
-const onHandleAdd = () => {
-    setItems((prevState) => [...prevState, { id: Date.now().toString(), value: textItem }]);
-    setTextItem("");
-};
-
-const onHandleModal = (item) => {
-    setSelectedItem(item);
-    setModalVisible(!modalVisible);
-};
-
-const deleteItem = () => {
-    setItems((prevState) => prevState.filter((item) => item.id !== selectedItem.id));
-    setModalVisible(false);
-};
-
-const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
-    <Text>{item.value}</Text>
-    <TouchableOpacity onPress={() => onHandleModal(item)}>
-        <Text>x</Text>
-    </TouchableOpacity>
-    </View>
-);
-
-return (
-    <View style={styles.container}>
-    <View style={styles.inputContainer}>
-        <TextInput
-        value={textItem}
-        placeholder='Elemento a agregar'
-        onChangeText={onHandleTextChange}
-        style={styles.textInput}
-        />
-        <Button title="Agregar" onPress={onHandleAdd} />
-    </View>
-    <View style={styles.listContainer}>
-        <FlatList
-        data={items}
-        renderItem={renderItem}
-        keyExtractor={(item) => item.id}
-        />
-    </View>
-    <Modal visible={modalVisible} animationType='fade' style={styles.modal}>
-        <Text>¿Estás seguro de eliminar este elemento?</Text>
-        <Button title="Sí, borrar" color="#db5a42" onPress={deleteItem} />
-        <Button title="Cancelar" onPress={onHandleModal} />
-    </Modal>
-    </View>
-);
+    return (
+        <View style={styles.container}>
+            <Text style={styles.headText}>To Do List</Text>
+            <ScrollView style={styles.ScrollView}>
+                {tareas.map((tarea, index) => {
+                    return (
+                        <View key={index} style={styles.tareaContainer}>
+                            <TareaItem index={index + 1} tarea={tarea} borrarTarea={() => borrarTarea(index)} />
+                        </View>
+                    )
+                })}
+            </ScrollView>
+            <View style={styles.footerbar}>
+                <TareaInputField addTarea={addTarea} />
+            </View>
+        </View>
+    );
 }
 
 const styles = StyleSheet.create({
-container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    marginTop: 100,
-},
-inputContainer: {
-    flexDirection: 'row',
-},
-textInput: {
-    paddingHorizontal: 20,
-},
-itemContainer: {
-    flexDirection: 'row',
-},
-listContainer: {
-    flex: 1,
-    width: '100%',
-},
-modal: {
-    justifyContent: 'center',
-    alignItems: 'center',
-},
+    container: {
+        flex: 1,
+        backgroundColor: "#ecf0f1",
+        position: 'relative',
+    },
+    headText: {
+        margin: 24,
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    ScrollView: {
+        marginBottom: 10,
+    },
+    tareaContainer: {
+        marginTop: 10,
+    },
+    footerbar: {
+        position: 'absolute',
+        bottom: 0,
+        backgroundColor: '#ccc',
+        width: '100%',
+        height: 50,
+    },
 });
